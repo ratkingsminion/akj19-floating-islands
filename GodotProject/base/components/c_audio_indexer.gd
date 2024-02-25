@@ -150,7 +150,7 @@ func play(id: StringName, after_seconds := 0.0, must_not_playing := false) -> vo
 	if not audio_players_by_id.has(id): printerr("Could not find AudioPlayer ", id); return
 	var ap: Dictionary = audio_players_by_id[id]
 	if must_not_playing and ap["node"].playing: return
-	if ap["last_played"] >= Time.get_ticks_msec() + after_seconds * 1000: return
+	if ap["last_played"] >= Time.get_ticks_msec() - after_seconds * 1000: return
 	ap["node"].play()
 	ap["last_played"] = Time.get_ticks_msec()
 
@@ -158,7 +158,7 @@ func play_at_pos_2d(id: StringName, pos: Vector2, after_seconds := 0.0, must_not
 	if not audio_players_by_id.has(id): printerr("Could not find AudioPlayer ", id); return
 	var ap: Dictionary = audio_players_by_id[id]
 	if must_not_playing and ap["node"].playing: return
-	if ap["last_played"] >= Time.get_ticks_msec() + after_seconds * 1000: return
+	if ap["last_played"] >= Time.get_ticks_msec() - after_seconds * 1000: return
 	if ap["node"] is Node2D: ap["node"].global_position = pos
 	else: printerr("AudioPlayer ", id, " is not a 2d node")
 	ap["node"].play()
@@ -168,7 +168,7 @@ func play_at_pos_3d(id: StringName, pos: Vector3, after_seconds := 0.0, must_not
 	if not audio_players_by_id.has(id): printerr("Could not find AudioPlayer ", id); return
 	var ap: Dictionary = audio_players_by_id[id]
 	if must_not_playing and ap["node"].playing: return
-	if ap["last_played"] >= Time.get_ticks_msec() + after_seconds * 1000: return
+	if ap["last_played"] >= Time.get_ticks_msec() - after_seconds * 1000: return
 	if ap["node"] is Node3D: ap["node"].global_position = pos
 	else: printerr("AudioPlayer ", id, " is not a 3d node")
 	ap["node"].play()

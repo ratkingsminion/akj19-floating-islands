@@ -19,20 +19,22 @@ var dead := false
 func _ready() -> void:
 	Events.HURT.register_for(self, _on_hurt)
 	animation_player.play(&"idle")
-	weapon.last_time = Time.get_ticks_msec() + randi_range(1000, 2000)
+	weapon.last_time = Time.get_ticks_msec() + 1000 + int(1000 * randf() * weapon.cool_down)
 
 func _process(delta: float) -> void:
 	life_timer += delta
 	if weapon != null and Game.inst._cur_player != null:
-		weapon.shoot(Game.inst._cur_player.get_target_global_pos(), self)
+		if weapon.shoot(Game.inst._cur_player.get_target_global_pos(), self):
+			Game.inst.audio.play_at_pos_2d("enemy_shoot", global_position)
 
 ###
 
 func die(source: Node) -> void:
-	if effect_die != null:
+	if source != self and effect_die != null:
 		var die_effect := effect_die.instantiate() as Node2D
 		Game.inst.add_child(die_effect, true)
 		die_effect.global_position = global_position
+	Game.inst.audio.play_at_pos_2d("enemy_die", global_position)
 	Events.ENEMY_DIED.emit(self)
 	queue_free()
 
@@ -53,6 +55,7 @@ func _on_hurt(source: Node) -> void:
 	
 		source.destroy()
 		health -= 1
+		if health > 0: Game.inst.audio.play_at_pos_2d("enemy_hurt", global_position)
 		
 	if health <= 0:
 		die(source)

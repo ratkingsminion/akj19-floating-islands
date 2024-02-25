@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dcebmvlwlwr0g"]
+[gd_scene load_steps=21 format=3 uid="uid://dcebmvlwlwr0g"]
 
 [ext_resource type="PackedScene" uid="uid://distrp7iugfhf" path="res://scenes/level.tscn" id="1_k018x"]
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_mqg4y"]
@@ -7,16 +7,70 @@
 [ext_resource type="Script" path="res://scripts/bullets.gd" id="3_a7jpj"]
 [ext_resource type="Script" path="res://scripts/cam.gd" id="4_rjnyy"]
 [ext_resource type="PackedScene" uid="uid://ca6q0ha2et3xq" path="res://scenes/portal.tscn" id="4_rset1"]
+[ext_resource type="Script" path="res://base/components/c_audio_indexer.gd" id="5_b1kef"]
+[ext_resource type="AudioStream" uid="uid://bqd8dsv1kmj8l" path="res://snd/player_shoot.wav" id="6_mjld3"]
+[ext_resource type="AudioStream" uid="uid://bvyg3x2tcrkvp" path="res://snd/player_hurt.wav" id="7_yjrl5"]
+[ext_resource type="AudioStream" uid="uid://b0kusoiyi0htk" path="res://snd/player_walk.wav" id="8_3u6s3"]
 [ext_resource type="Theme" uid="uid://1vmm0wv3dqji" path="res://gfx/Silkscreen/theme.tres" id="8_i0arf"]
+[ext_resource type="AudioStream" uid="uid://b0mqpsr2c0pi2" path="res://snd/player_die.wav" id="9_6wrin"]
+[ext_resource type="AudioStream" uid="uid://6m210dhc1sdb" path="res://snd/enemy_shoot.wav" id="10_r3m1q"]
+[ext_resource type="AudioStream" uid="uid://dpmdqswiuqufy" path="res://snd/enemy_hurt.wav" id="11_hiseg"]
+[ext_resource type="AudioStream" uid="uid://bgl8wpitejg33" path="res://snd/enemy_die.wav" id="12_x62go"]
+[ext_resource type="AudioStream" uid="uid://ch3xlq0y6o51" path="res://snd/portal.wav" id="13_y4ckj"]
+[ext_resource type="AudioStream" uid="uid://5ejckvgbs1si" path="res://snd/dizzy_01.ogg" id="14_hkvrr"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_5btlk"]
+random_pitch = 1.1
+random_volume_offset_db = 1.0
+streams_count = 1
+stream_0/stream = ExtResource("8_3u6s3")
+stream_0/weight = 1.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qqp1c"]
 
-[node name="Game" type="Node2D" node_paths=PackedStringArray("_info_label")]
+[node name="Game" type="Node2D" node_paths=PackedStringArray("_info_label", "_title_screen")]
 script = ExtResource("1_mqg4y")
 _player_scene = ExtResource("2_2gu23")
 _enemy_scenes = Array[PackedScene]([ExtResource("3_1a0o3")])
 _portal_scene = ExtResource("4_rset1")
 _info_label = NodePath("CanvasLayer/PanelContainer/Control/PanelContainer/MarginContainer/RichTextLabel")
+_title_screen = NodePath("CanvasLayer/PanelContainer/TitleScreen Control")
+
+[node name="CompAudioIndexer" type="Node" parent="."]
+script = ExtResource("5_b1kef")
+
+[node name="player_shoot" type="AudioStreamPlayer2D" parent="CompAudioIndexer"]
+stream = ExtResource("6_mjld3")
+
+[node name="player_hurt" type="AudioStreamPlayer2D" parent="CompAudioIndexer"]
+stream = ExtResource("7_yjrl5")
+
+[node name="player_walk" type="AudioStreamPlayer2D" parent="CompAudioIndexer"]
+stream = SubResource("AudioStreamRandomizer_5btlk")
+volume_db = -3.0
+
+[node name="player_die" type="AudioStreamPlayer2D" parent="CompAudioIndexer"]
+stream = ExtResource("9_6wrin")
+
+[node name="enemy_shoot" type="AudioStreamPlayer2D" parent="CompAudioIndexer"]
+stream = ExtResource("10_r3m1q")
+
+[node name="enemy_hurt" type="AudioStreamPlayer2D" parent="CompAudioIndexer"]
+stream = ExtResource("11_hiseg")
+
+[node name="enemy_die" type="AudioStreamPlayer2D" parent="CompAudioIndexer"]
+stream = ExtResource("12_x62go")
+
+[node name="portal" type="AudioStreamPlayer2D" parent="CompAudioIndexer"]
+stream = ExtResource("13_y4ckj")
+
+[node name="Music CompAudioIndexer" type="Node" parent="."]
+script = ExtResource("5_b1kef")
+is_music = true
+
+[node name="dizzy_01" type="AudioStreamPlayer" parent="Music CompAudioIndexer"]
+stream = ExtResource("14_hkvrr")
+volume_db = -6.0
 
 [node name="Level" parent="." instance=ExtResource("1_k018x")]
 rotation_speed = 0.0
@@ -43,6 +97,44 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("8_i0arf")
 theme_override_styles/panel = SubResource("StyleBoxEmpty_qqp1c")
+
+[node name="TitleScreen Control" type="Control" parent="CanvasLayer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/PanelContainer/TitleScreen Control"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -242.0
+offset_top = -191.0
+offset_right = 242.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PanelContainer/TitleScreen Control/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/PanelContainer/TitleScreen Control/PanelContainer/MarginContainer"]
+modulate = Color(1, 1, 0.698039, 1)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "[center]*** Dizzy Island Liberator ***
+by ratrogue
+for Alakajam #19[/center]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
 
 [node name="Control" type="Control" parent="CanvasLayer/PanelContainer"]
 layout_mode = 2

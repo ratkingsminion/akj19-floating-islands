@@ -21,4 +21,5 @@ func _on_hurt(source: Node) -> void:
 		)
 		source.destroy()
 	elif source is Player:
+		Game.inst.audio.play_at_pos_2d("portal", global_position)
 		Events.PLAYER_ENTERED_PORTAL.emit()

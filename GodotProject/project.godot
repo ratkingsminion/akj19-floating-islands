@@ -10,7 +10,9 @@ config_version=5
 
 [application]
 
-config/name="Floating Islands"
+config/name="Dizzy Island Liberator"
+config/description="Made by ratrogue for Alakajam 19"
+config/version="0.8.0"
 run/main_scene="res://scenes/game.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
 boot_splash/bg_color=Color(0.141176, 0.141176, 0.141176, 0)
@@ -34,6 +36,10 @@ window/size/mode=4
 window/size/resizable=false
 window/size/borderless=true
 window/size/transparent=true
+
+[filesystem]
+
+import/blender/enabled=false
 
 [input]
 

@@ -175,9 +175,6 @@ position = Vector2(0, -1.33333)
 scale = Vector2(0.333333, 0.333333)
 script = ExtResource("3_rerlb")
 bullet_scene = ExtResource("2_7xc3r")
-bullet_life_time = null
-bullet_speed = null
-cool_down = null
 is_local = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Graphics"]

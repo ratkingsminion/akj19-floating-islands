@@ -9,11 +9,12 @@ static var cur: Level
 @export var float_frequency := 5.0
 @export var float_amplitude = 2.0
 
-var top: Node2D
+var grass: Node2D
+var beach: Node2D
 var bottom: Node2D
 var tile_gfx_size: int
 var tile_scale: float
-var map: Dictionary # Vector2->Node
+var map: Dictionary # Vector2->Dictionary[beach:Node, grass:Node]
 var _float_time: float
 
 @onready var _tiles: Node2D = $TILES
@@ -34,7 +35,7 @@ func _process(delta: float) -> void:
 	_float_time += delta
 	position = Vector2(0.0, sin(_float_time * float_frequency) * float_amplitude)
 	
-	bottom.global_position = top.global_position + Vector2.DOWN * 20.0
+	bottom.global_position = beach.global_position + Vector2.DOWN * 20.0
 
 ###
 
@@ -50,7 +51,7 @@ func get_outskirt_global_pos() -> Vector2:
 	var smallest_n := 5
 	var pos := keys.back() as Vector2i
 	for key in keys:
-		var n := map[key].get_meta("neighbors", 5) as int
+		var n := map[key]["neighbors"] as int
 		if n < smallest_n:
 			smallest_n = n
 			pos = key
@@ -62,7 +63,7 @@ func check(global_pos: Vector2, radius := 10.0) -> bool:
 	var rect := Rect2(0, 0, tile_size, tile_size)
 		
 	for key in map:
-		var sprite := map[key] as Sprite2D
+		var sprite := map[key]["beach"] as Sprite2D
 		rect.position.x = sprite.position.x - tile_size * 0.5
 		rect.position.y = sprite.position.y - tile_size * 0.5
 		var delta_x := local_pos.x - maxf(rect.position.x, minf(local_pos.x, rect.position.x + rect.size.x))
@@ -78,10 +79,15 @@ func generate_island(tile_count: int, reset := true) -> void:
 	if reset:
 		for c in chars.get_children(): c.queue_free()
 		for c in bullets_local.get_children(): c.queue_free()
-		if top != null: top.queue_free()
 		map.clear()
-		top = Node2D.new()
-		_tiles.add_child(top)
+		
+		if beach != null: beach.queue_free()
+		beach = Node2D.new()
+		_tiles.add_child(beach)
+		
+		if grass != null: grass.queue_free()
+		grass = Node2D.new()
+		_tiles.add_child(grass)
 	if bottom != null: bottom.queue_free()
 	
 	for i in tile_count:
@@ -89,30 +95,49 @@ func generate_island(tile_count: int, reset := true) -> void:
 		while map.has(key):
 			var nk: Vector2i = map.keys().pick_random() # key
 			key = nk + dirs.pick_random()
-		var sprite := Sprite2D.new()
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		sprite.texture = floor_gfx
-		sprite.modulate = Color.YELLOW_GREEN.lerp(Color.AQUAMARINE, randf())
-		top.add_child(sprite)
-		sprite.position = key * tile_size
-		map[key] = sprite
+		map[key] = {} 
 	
 	# set graphics
 	for key in map:
-		var sprite := map[key] as Sprite2D
-		sprite.scale = Vector2.ONE * tile_scale
-		var i := 0
 		var n := 0
-		if map.has(key + Vector2i.UP): n += 1; i += 1
-		if map.has(key + Vector2i.RIGHT): n += 1; i += 2
-		if map.has(key + Vector2i.DOWN): n += 1; i += 4
-		if map.has(key + Vector2i.LEFT): n += 1; i += 8
-		sprite.set_meta("neighbors", n)
-		sprite.region_enabled = true
-		sprite.region_rect = Rect2((i % 8) * tile_gfx_size, (i / 8) * tile_gfx_size, tile_gfx_size, tile_gfx_size)
-		#print(sprite.region_rect)
+		if map.has(key + Vector2i.UP): n += 1
+		if map.has(key + Vector2i.RIGHT): n += 1
+		if map.has(key + Vector2i.DOWN): n += 1
+		if map.has(key + Vector2i.LEFT): n += 1
+		map[key]["neighbors"] = n
+		
+	for key in map:
+		var i_beach := 0
+		var i_grass := 0
+		if map.has(key + Vector2i.UP): i_beach += 1; i_grass += 1 if map[key + Vector2i.UP]["neighbors"] > 3 else 0
+		if map.has(key + Vector2i.RIGHT): i_beach += 2; i_grass += 2 if map[key + Vector2i.RIGHT]["neighbors"] > 3 else 0
+		if map.has(key + Vector2i.DOWN): i_beach += 4; i_grass += 4 if map[key + Vector2i.DOWN]["neighbors"] > 3 else 0
+		if map.has(key + Vector2i.LEFT): i_beach += 8; i_grass += 8 if map[key + Vector2i.LEFT]["neighbors"] > 3 else 0
+		
+		var sprite_beach := Sprite2D.new()
+		sprite_beach.scale = Vector2.ONE * tile_scale
+		sprite_beach.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		sprite_beach.texture = floor_gfx
+		sprite_beach.position = key * tile_size
+		sprite_beach.region_enabled = true
+		sprite_beach.region_rect = Rect2((i_beach % 8) * tile_gfx_size, (i_beach / 8) * tile_gfx_size, tile_gfx_size, tile_gfx_size)
+		sprite_beach.modulate = Color.BURLYWOOD.lerp(Color.BISQUE, randf())
+		beach.add_child(sprite_beach)
+		map[key]["beach"] = sprite_beach
+		
+		if map[key]["neighbors"] > 3:
+			var sprite_grass := Sprite2D.new()
+			sprite_grass.scale = Vector2.ONE * tile_scale
+			sprite_grass.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			sprite_grass.texture = floor_gfx
+			sprite_grass.position = key * tile_size
+			sprite_grass.region_enabled = true
+			sprite_grass.region_rect = Rect2((i_grass % 8) * tile_gfx_size, (i_grass / 8) * tile_gfx_size, tile_gfx_size, tile_gfx_size)
+			sprite_grass.modulate = Color.DARK_OLIVE_GREEN.lerp(Color.MEDIUM_SEA_GREEN, randf())
+			grass.add_child(sprite_grass)
+			map[key]["grass"] = sprite_grass
 
-	bottom = top.duplicate()
+	bottom = beach.duplicate()
 	_tiles.add_child(bottom)
 	_tiles.move_child(bottom, 0)
 	for c in bottom.get_children():
