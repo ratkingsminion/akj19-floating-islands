@@ -1,0 +1,84 @@
+[gd_scene load_steps=10 format=3 uid="uid://ca6q0ha2et3xq"]
+
+[ext_resource type="Script" path="res://scripts/portal.gd" id="1_jjjkr"]
+[ext_resource type="Script" path="res://scripts/billboard.gd" id="2_fbcs5"]
+[ext_resource type="Script" path="res://scripts/bullet_receiver.gd" id="3_p2lp6"]
+[ext_resource type="Texture2D" uid="uid://b0sre5v0dbc7i" path="res://gfx/stuff.png" id="4_xu58f"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gxc2l"]
+size = Vector2(18, 18)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lmslo"]
+size = Vector2(17.6667, 12.0833)
+
+[sub_resource type="Animation" id="Animation_ev4x4"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_c7k8w"]
+resource_name = "portal"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0, 0),
+"update": 1,
+"values": [8, 9]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1w3sr"]
+_data = {
+"RESET": SubResource("Animation_ev4x4"),
+"portal": SubResource("Animation_c7k8w")
+}
+
+[node name="Portal" type="CharacterBody2D"]
+script = ExtResource("1_jjjkr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_gxc2l")
+
+[node name="Graphics" type="Node2D" parent="."]
+script = ExtResource("2_fbcs5")
+
+[node name="Area2D" type="Area2D" parent="Graphics" node_paths=PackedStringArray("woundable")]
+position = Vector2(0, -24)
+scale = Vector2(3, 3)
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("3_p2lp6")
+woundable = NodePath("../..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Graphics/Area2D"]
+position = Vector2(0, 8)
+shape = SubResource("RectangleShape2D_lmslo")
+
+[node name="Sprite" type="Sprite2D" parent="Graphics"]
+texture_filter = 1
+position = Vector2(0, -24)
+scale = Vector2(3, 3)
+texture = ExtResource("4_xu58f")
+hframes = 4
+vframes = 4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Graphics"]
+libraries = {
+"": SubResource("AnimationLibrary_1w3sr")
+}

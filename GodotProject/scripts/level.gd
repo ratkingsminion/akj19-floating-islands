@@ -5,7 +5,6 @@ static var cur: Level
 
 @export var floor_gfx: Texture2D
 @export var tile_size := 64.0
-@export var tile_count := 20
 @export var rotation_speed := 50.0
 @export var float_frequency := 5.0
 @export var float_amplitude = 2.0
@@ -45,6 +44,19 @@ func get_random_global_pos() -> Vector2:
 		return to_global(pos * tile_size)
 	return Vector2.ZERO
 
+func get_outskirt_global_pos() -> Vector2:
+	var keys := map.keys()
+	keys.shuffle()
+	var smallest_n := 5
+	var pos := keys.back() as Vector2i
+	for key in keys:
+		var n := map[key].get_meta("neighbors", 5) as int
+		if n < smallest_n:
+			smallest_n = n
+			pos = key
+			if n == 1: break
+	return to_global(pos * tile_size)
+
 func check(global_pos: Vector2, radius := 10.0) -> bool:
 	var local_pos := to_local(global_pos)
 	var rect := Rect2(0, 0, tile_size, tile_size)
@@ -60,7 +72,7 @@ func check(global_pos: Vector2, radius := 10.0) -> bool:
 
 ###
 
-func generate_island(reset := true) -> void:
+func generate_island(tile_count: int, reset := true) -> void:
 	var dirs: Array[Vector2i] = [ Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN ]
 	
 	if reset:
@@ -89,10 +101,12 @@ func generate_island(reset := true) -> void:
 		var sprite := map[key] as Sprite2D
 		sprite.scale = Vector2.ONE * tile_scale
 		var i := 0
-		if map.has(key + Vector2i.UP): i += 1
-		if map.has(key + Vector2i.RIGHT): i += 2
-		if map.has(key + Vector2i.DOWN): i += 4
-		if map.has(key + Vector2i.LEFT): i += 8
+		var n := 0
+		if map.has(key + Vector2i.UP): n += 1; i += 1
+		if map.has(key + Vector2i.RIGHT): n += 1; i += 2
+		if map.has(key + Vector2i.DOWN): n += 1; i += 4
+		if map.has(key + Vector2i.LEFT): n += 1; i += 8
+		sprite.set_meta("neighbors", n)
 		sprite.region_enabled = true
 		sprite.region_rect = Rect2((i % 8) * tile_gfx_size, (i / 8) * tile_gfx_size, tile_gfx_size, tile_gfx_size)
 		#print(sprite.region_rect)

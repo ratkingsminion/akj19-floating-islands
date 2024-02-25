@@ -13,17 +13,17 @@ var dead := false
 @onready var health := max_health
 @onready var animation_player: AnimationPlayer = $Graphics/AnimationPlayer
 @onready var sprite: Sprite2D = $Graphics/Sprite
-@onready var _shoot_start := randf_range(1.0, 2.0)
 
 ###
 
 func _ready() -> void:
 	Events.HURT.register_for(self, _on_hurt)
 	animation_player.play(&"idle")
+	weapon.last_time = Time.get_ticks_msec() + randi_range(1000, 2000)
 
 func _process(delta: float) -> void:
 	life_timer += delta
-	if life_timer > _shoot_start and weapon != null and Game.inst._cur_player != null:
+	if weapon != null and Game.inst._cur_player != null:
 		weapon.shoot(Game.inst._cur_player.get_target_global_pos(), self)
 
 ###
@@ -33,7 +33,7 @@ func die(source: Node) -> void:
 		var die_effect := effect_die.instantiate() as Node2D
 		Game.inst.add_child(die_effect, true)
 		die_effect.global_position = global_position
-	
+	Events.ENEMY_DIED.emit(self)
 	queue_free()
 
 ### events

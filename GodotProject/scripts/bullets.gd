@@ -24,7 +24,7 @@ func _physics_process(delta: float) -> void:
 
 ###
 
-func shoot(node: Node2D, speed: float, life_time: float, target: Vector2, by: Node, local: bool) -> void:
+func shoot(node: Node2D, global_pos: Vector2, speed: float, life_time: float, target: Vector2, by: Node, local: bool) -> void:
 	var parent := node.get_parent()
 	if parent == null:
 		if local: parent = Game.inst.level.bullets_local
@@ -32,6 +32,7 @@ func shoot(node: Node2D, speed: float, life_time: float, target: Vector2, by: No
 		parent.add_child(node, true)
 	
 	var bullet := node as Bullet
+	bullet.global_position = global_pos
 	bullet.velocity = speed * (parent.to_local(target) - bullet.position).normalized()
 	bullet.rotation = atan2(bullet.velocity.y, bullet.velocity.x)
 	bullet.life_time = life_time

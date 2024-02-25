@@ -19,7 +19,7 @@ func shoot(target: Vector2, by: Node) -> void:
 		return
 	
 	var bullet := bullet_scene.instantiate() as Node2D
-	bullet.global_position = global_position + Vector2(randf_range(-5.0, 5.0), randf_range(-5.0, 5.0))
-	Bullets.inst.shoot(bullet, bullet_speed, bullet_life_time, target, by, is_local)
+	var pos = global_position + Vector2(randf_range(-5.0, 5.0), randf_range(-5.0, 5.0))
+	Bullets.inst.shoot(bullet, pos, bullet_speed, bullet_life_time, target, by, is_local)
 	
 	last_time = Time.get_ticks_msec() + int(cool_down * 1000.0)
