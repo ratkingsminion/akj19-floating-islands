@@ -48,7 +48,7 @@ func _on_hurt(source: Node) -> void:
 			hurt_effect.global_position = source.global_position
 		
 		Tweens.do_01(self, 0.35, func(f: float) -> void:
-			modulate = Color.CRIMSON.lerp(Color.WHITE, f)
+			sprite.modulate = Color.CRIMSON.lerp(Color.WHITE, f)
 		)
 	
 		source.destroy()

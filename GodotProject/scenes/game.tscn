@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dcebmvlwlwr0g"]
+[gd_scene load_steps=10 format=3 uid="uid://dcebmvlwlwr0g"]
 
 [ext_resource type="PackedScene" uid="uid://distrp7iugfhf" path="res://scenes/level.tscn" id="1_k018x"]
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_mqg4y"]
@@ -7,12 +7,16 @@
 [ext_resource type="Script" path="res://scripts/bullets.gd" id="3_a7jpj"]
 [ext_resource type="Script" path="res://scripts/cam.gd" id="4_rjnyy"]
 [ext_resource type="PackedScene" uid="uid://ca6q0ha2et3xq" path="res://scenes/portal.tscn" id="4_rset1"]
+[ext_resource type="Theme" uid="uid://1vmm0wv3dqji" path="res://gfx/Silkscreen/theme.tres" id="8_i0arf"]
 
-[node name="Game" type="Node2D"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qqp1c"]
+
+[node name="Game" type="Node2D" node_paths=PackedStringArray("_info_label")]
 script = ExtResource("1_mqg4y")
 _player_scene = ExtResource("2_2gu23")
 _enemy_scenes = Array[PackedScene]([ExtResource("3_1a0o3")])
 _portal_scene = ExtResource("4_rset1")
+_info_label = NodePath("CanvasLayer/PanelContainer/Control/PanelContainer/MarginContainer/RichTextLabel")
 
 [node name="Level" parent="." instance=ExtResource("1_k018x")]
 rotation_speed = 0.0
@@ -28,3 +32,46 @@ y_sort_enabled = true
 position = Vector2(0, 1000)
 script = ExtResource("4_rjnyy")
 lerp_speed = 5.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("8_i0arf")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_qqp1c")
+
+[node name="Control" type="Control" parent="CanvasLayer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/PanelContainer/Control"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -64.0
+offset_top = 150.0
+offset_right = 65.0
+offset_bottom = 212.0
+grow_horizontal = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PanelContainer/Control/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/PanelContainer/Control/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]LEVEL: 0
+HEALTH: 10/10"
+fit_content = true
+autowrap_mode = 0

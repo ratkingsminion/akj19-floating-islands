@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://1vmm0wv3dqji"]
+
+[ext_resource type="FontFile" uid="uid://du4uo2df54b15" path="res://gfx/Silkscreen/slkscr.ttf" id="1_3qgyg"]
+
+[resource]
+default_font = ExtResource("1_3qgyg")

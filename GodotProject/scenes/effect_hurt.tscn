@@ -23,6 +23,8 @@ orbit_velocity_max = 0.1
 radial_velocity_min = 30.0
 radial_velocity_max = 30.0
 gravity = Vector3(0, 0, 0)
+scale_min = 0.5
+scale_max = 2.0
 color = Color(0.960784, 0.133333, 0.54902, 1)
 color_ramp = SubResource("GradientTexture1D_o166d")
 anim_offset_min = 0.25
@@ -31,7 +33,7 @@ anim_offset_max = 0.25
 [node name="Effect Hurt" type="GPUParticles2D"]
 texture_filter = 1
 material = SubResource("CanvasItemMaterial_mul7l")
-amount = 200
+amount = 100
 process_material = SubResource("ParticleProcessMaterial_3fr0h")
 texture = ExtResource("1_lnp17")
 script = ExtResource("2_5nh8a")

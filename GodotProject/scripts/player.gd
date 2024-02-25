@@ -9,7 +9,6 @@ extends CharacterBody2D
 @export var effect_die: PackedScene
 
 var _input_move: Vector2
-var dead := false
 var _anim_suffix := "f"
 
 @onready var health := max_health
@@ -22,7 +21,7 @@ func _ready() -> void:
 	Events.HURT.register_for(self, _on_hurt)
 
 func _process(delta: float) -> void:
-	if dead:
+	if health <= 0:
 		sprite.rotation_degrees += delta * 360.0
 		sprite.modulate = sprite.modulate.lerp(Color.BLACK, delta * 2)
 	else:
@@ -30,7 +29,7 @@ func _process(delta: float) -> void:
 			weapon.shoot(get_global_mouse_position(), self)
 
 func _physics_process(delta: float) -> void:
-	if dead:
+	if health <= 0:
 		_input_move = Vector2.ZERO
 		animation_player.stop()
 	elif Input.is_action_pressed("shoot") or weapon.is_shooting():
@@ -39,7 +38,8 @@ func _physics_process(delta: float) -> void:
 	else:
 		_input_move = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 		if not Level.cur.check(global_position + Vector2.UP * 5.0, 5.0):
-			dead = true
+			health = 0
+			Events.HURT.emit_to(self, self)
 		var anim := "idle_" if not _input_move else "walk_"
 		if _input_move.y > 0.0 or (_input_move.y == 0.0 and _input_move.x != 0): _anim_suffix = "f"
 		elif _input_move.y < 0.0: _anim_suffix = "b"
@@ -47,7 +47,7 @@ func _physics_process(delta: float) -> void:
 	
 	velocity = _input_move * walk_speed
 
-	if not dead and velocity:
+	if health > 0 and velocity:
 		move_and_slide()
 
 ###
@@ -56,7 +56,7 @@ func get_target_global_pos() -> Vector2:
 	return sprite.global_position
 
 func die(source: Node) -> void:
-	dead = true
+	health = 0
 	
 	if effect_die != null:
 		var die_effect := effect_die.instantiate() as Node2D
@@ -75,7 +75,7 @@ func _on_hurt(source: Node) -> void:
 			hurt_effect.global_position = source.global_position
 		
 		Tweens.do_01(self, 0.35, func(f: float) -> void:
-			modulate = Color.CRIMSON.lerp(Color.WHITE, f)
+			sprite.modulate = Color.CRIMSON.lerp(Color.WHITE, f)
 		)
 	
 		source.destroy()

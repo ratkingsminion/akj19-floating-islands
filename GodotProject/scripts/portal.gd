@@ -2,6 +2,9 @@ class_name Portal
 extends Node2D
 
 @onready var animation_player: AnimationPlayer = $Graphics/AnimationPlayer
+@onready var sprite: Sprite2D = $Graphics/Sprite
+
+###
 
 func _ready() -> void:
 	animation_player.play("portal")
@@ -14,7 +17,7 @@ func _on_hurt(source: Node) -> void:
 		
 	if source is Bullet:
 		Tweens.do_01(self, 0.35, func(f: float) -> void:
-			modulate = Color.CRIMSON.lerp(Color.WHITE, f)
+			sprite.modulate = Color.CRIMSON.lerp(Color.WHITE, f)
 		)
 		source.destroy()
 	elif source is Player:

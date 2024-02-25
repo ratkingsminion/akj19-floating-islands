@@ -1,7 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://dgsqgd5vx0c7s"]
+[gd_scene load_steps=18 format=3 uid="uid://dgsqgd5vx0c7s"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_dnvdk"]
 [ext_resource type="PackedScene" uid="uid://ca6bfpxw1crl4" path="res://scenes/bullet_01.tscn" id="2_7xc3r"]
+[ext_resource type="PackedScene" uid="uid://dfykabt41yuor" path="res://scenes/effect_hurt.tscn" id="2_nu2gk"]
 [ext_resource type="Script" path="res://scripts/billboard.gd" id="3_7wbj2"]
 [ext_resource type="Script" path="res://scripts/bullet_receiver.gd" id="3_pg6as"]
 [ext_resource type="Script" path="res://scripts/weapon.gd" id="3_rerlb"]
@@ -140,6 +141,7 @@ _data = {
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("weapon")]
 script = ExtResource("1_dnvdk")
 weapon = NodePath("Graphics/Sprite/Weapon")
+effect_hurt = ExtResource("2_nu2gk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -0.5)
