@@ -1,0 +1,38 @@
+[gd_scene load_steps=7 format=3 uid="uid://dfykabt41yuor"]
+
+[ext_resource type="Texture2D" uid="uid://b0sre5v0dbc7i" path="res://gfx/stuff.png" id="1_lnp17"]
+[ext_resource type="Script" path="res://scripts/particles_destroyed.gd" id="2_5nh8a"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_mul7l"]
+particles_animation = true
+particles_anim_h_frames = 4
+particles_anim_v_frames = 4
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_dvhrs"]
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_o166d"]
+gradient = SubResource("Gradient_dvhrs")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_3fr0h"]
+particle_flag_disable_z = true
+angle_max = 360.0
+orbit_velocity_min = -0.1
+orbit_velocity_max = 0.1
+radial_velocity_min = 30.0
+radial_velocity_max = 30.0
+gravity = Vector3(0, 0, 0)
+color = Color(0.960784, 0.133333, 0.54902, 1)
+color_ramp = SubResource("GradientTexture1D_o166d")
+anim_offset_min = 0.25
+anim_offset_max = 0.25
+
+[node name="Effect Hurt" type="GPUParticles2D"]
+texture_filter = 1
+material = SubResource("CanvasItemMaterial_mul7l")
+amount = 200
+process_material = SubResource("ParticleProcessMaterial_3fr0h")
+texture = ExtResource("1_lnp17")
+script = ExtResource("2_5nh8a")
+disable_emit_after = 0.2

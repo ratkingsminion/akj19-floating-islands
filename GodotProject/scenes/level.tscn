@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://distrp7iugfhf"]
+
+[ext_resource type="Script" path="res://scripts/level.gd" id="1_kb5ar"]
+[ext_resource type="Texture2D" uid="uid://b53fuciby4yra" path="res://gfx/island.png" id="2_vp3ie"]
+
+[node name="Level" type="Node2D"]
+script = ExtResource("1_kb5ar")
+floor_gfx = ExtResource("2_vp3ie")
+
+[node name="Tiles" type="Node2D" parent="."]
