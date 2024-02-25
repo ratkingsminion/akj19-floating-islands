@@ -86,7 +86,8 @@ func create_island(tile_count: int) -> void:
 	elif _cur_level == 2:
 		_cur_enemy_count = 1
 		music.music_fade_in("dizzy_01")
-		_title_screen.queue_free()
+		if is_instance_valid(_title_screen):
+			_title_screen.queue_free()
 	else:
 		var min_count := tile_count / 4 - 1
 		var max_count := tile_count / 4 + 1
