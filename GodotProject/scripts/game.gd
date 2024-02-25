@@ -10,7 +10,8 @@ static var inst: Game
 @export var _title_screen: Control
 @export var _tile_count_increase_per_level := 3
 @export var _tile_count_at_start := 7
-@export var _rotation_increase_per_level := 5.0
+@export var _rotation_increase_per_level := 3.0
+@export var _rotation_max := 60.0
 
 var _follow_graphics: Dictionary
 var _cur_player: Player
@@ -69,6 +70,7 @@ func create_island(tile_count: int) -> void:
 	if _cur_level == 1: level.rotation_degrees = 0.0
 	else: level.rotation_degrees = randf_range(0.0, 360.0)
 	level.rotation_speed = max(_cur_level - 2, 0) * _rotation_increase_per_level * Math.rnd_np()
+	if level.rotation_speed > _rotation_max: level.rotation_speed = _rotation_max
 	
 	level.generate_island(tile_count)
 	_cur_tile_count = tile_count
@@ -89,8 +91,8 @@ func create_island(tile_count: int) -> void:
 		if is_instance_valid(_title_screen):
 			_title_screen.queue_free()
 	else:
-		var min_count := tile_count / 4 - 1
-		var max_count := tile_count / 4 + 1
+		var min_count := tile_count / 6 - 1
+		var max_count := tile_count / 4 - 1
 		_cur_enemy_count = randi_range(min_count, max_count)
 		music.music_fade_in("dizzy_01")
 	
