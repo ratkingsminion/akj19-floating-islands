@@ -17,6 +17,10 @@ var tile_scale: float
 var map: Dictionary # Vector2->Node
 var _float_time: float
 
+@onready var _tiles: Node2D = $TILES
+@onready var chars: Node2D = $CHARS
+@onready var bullets_local: Node2D = $"BULLETS LOCAL"
+
 ###
 
 func _ready() -> void:
@@ -60,10 +64,11 @@ func generate_island(reset := true) -> void:
 	var dirs: Array[Vector2i] = [ Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN ]
 	
 	if reset:
+		for c in chars.get_children(): c.queue_free()
 		if top != null: top.queue_free()
 		map.clear()
 		top = Node2D.new()
-		$Tiles.add_child(top)
+		_tiles.add_child(top)
 	if bottom != null: bottom.queue_free()
 	
 	for i in tile_count:
@@ -93,8 +98,8 @@ func generate_island(reset := true) -> void:
 		#print(sprite.region_rect)
 
 	bottom = top.duplicate()
-	$Tiles.add_child(bottom)
-	$Tiles.move_child(bottom, 0)
+	_tiles.add_child(bottom)
+	_tiles.move_child(bottom, 0)
 	for c in bottom.get_children():
 		var sprite := c as Sprite2D
 		sprite.modulate = Color.BLACK

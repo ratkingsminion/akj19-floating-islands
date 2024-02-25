@@ -12,7 +12,6 @@ var _cur_player:Player
 @onready var level: Level = $Level
 @onready var _player_cam: PlayerCam = $"PlayerCam"
 @onready var _graphics: Node2D = $"GRAPHICS"
-@onready var _chars: Node2D = $Level/CHARS
 
 ###
 
@@ -33,7 +32,6 @@ func _process(delta: float) -> void:
 		if Input.is_action_just_pressed("restart") and Input.is_key_pressed(KEY_SHIFT):
 			level.generate_island(false)
 		elif Input.is_action_just_pressed("restart"):
-			for c in _chars.get_children(): c.queue_free()
 			level.generate_island()
 			spawn_player()
 			for i in randi_range(0, 2):
@@ -54,7 +52,7 @@ func spawn_player() -> void:
 	if _cur_player != null:
 		_cur_player.queue_free()
 	_cur_player = _player_scene.instantiate() as Player
-	_chars.add_child(_cur_player, true)
+	level.chars.add_child(_cur_player, true)
 	
 	_cur_player.global_position = level.global_position
 	_cur_player.global_rotation = 0.0
@@ -63,7 +61,7 @@ func spawn_player() -> void:
 
 func spawn_enemy(idx: int) -> void:
 	var enemy := _enemy_scenes[idx].instantiate() as Enemy
-	_chars.add_child(enemy, true)
+	level.chars.add_child(enemy, true)
 	
 	enemy.global_position = level.get_random_global_pos()
 	enemy.global_rotation = 0.0

@@ -7,4 +7,9 @@
 script = ExtResource("1_kb5ar")
 floor_gfx = ExtResource("2_vp3ie")
 
-[node name="Tiles" type="Node2D" parent="."]
+[node name="TILES" type="Node2D" parent="."]
+
+[node name="CHARS" type="Node2D" parent="."]
+
+[node name="BULLETS LOCAL" type="Node2D" parent="."]
+z_index = 1
