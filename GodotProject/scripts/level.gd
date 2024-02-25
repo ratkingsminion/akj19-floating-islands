@@ -77,6 +77,7 @@ func generate_island(tile_count: int, reset := true) -> void:
 	
 	if reset:
 		for c in chars.get_children(): c.queue_free()
+		for c in bullets_local.get_children(): c.queue_free()
 		if top != null: top.queue_free()
 		map.clear()
 		top = Node2D.new()
