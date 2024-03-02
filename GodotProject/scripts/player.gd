@@ -12,6 +12,8 @@ var _input_move: Vector2
 var _anim_suffix := "f"
 var health: int
 
+static var _stop_walk := 0.0
+
 @onready var animation_player: AnimationPlayer = $Graphics/AnimationPlayer
 @onready var sprite: Sprite2D = $Graphics/Sprite
 
@@ -19,6 +21,7 @@ var health: int
 
 func _ready() -> void:
 	Events.HURT.register_for(self, _on_hurt)
+	Events.PLAYER_ENTERED_PORTAL.register(_on_enter_portal)
 	max_health = max_health + Game.inst._cur_level - 1
 	health = max_health
 
@@ -42,6 +45,10 @@ func _physics_process(delta: float) -> void:
 	elif Input.is_action_pressed("shoot") or weapon.is_shooting():
 		_input_move = Vector2.ZERO
 		animation_player.play("shoot_" + _anim_suffix)
+	elif _stop_walk > Time.get_ticks_msec():
+		_input_move = Vector2.ZERO
+		var vector := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+		if not vector: _stop_walk = 0.0
 	else:
 		_input_move = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 		if not Level.cur.check(global_position + Vector2.UP * 5.0, 5.0):
@@ -75,6 +82,10 @@ func die(source: Node) -> void:
 	Events.PLAYER_DIED.emit()
 
 ### events
+
+func _on_enter_portal() -> void:
+	_stop_walk = Time.get_ticks_msec() + 500
+	_input_move = Vector2.ZERO
 
 func _on_hurt(source: Node) -> void:
 	if source == self: return
