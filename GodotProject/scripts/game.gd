@@ -33,6 +33,9 @@ var _all_chars := []
 ###
 
 func _ready() -> void:
+	get_tree().get_root().set_transparent_background(true)
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
+
 	Helpers.set_tree(get_tree())
 	inst = self
 	

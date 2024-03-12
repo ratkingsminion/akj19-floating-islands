@@ -12,10 +12,10 @@ config_version=5
 
 config/name="Dizzy Island Liberator"
 config/description="Made by ratrogue for Alakajam 19"
-config/version="0.8.3"
+config/version="0.8.4"
 run/main_scene="res://scenes/game.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
-boot_splash/bg_color=Color(0.439216, 0.439216, 0.439216, 0)
+boot_splash/bg_color=Color(0, 0, 0, 0)
 boot_splash/show_image=false
 boot_splash/fullsize=false
 boot_splash/use_filter=false
@@ -32,10 +32,11 @@ gdscript/warnings/integer_division=0
 
 window/size/viewport_width=600
 window/size/viewport_height=600
-window/size/mode=4
+window/size/mode=3
 window/size/resizable=false
 window/size/borderless=true
 window/size/transparent=true
+window/per_pixel_transparency/allowed=true
 
 [filesystem]
 
